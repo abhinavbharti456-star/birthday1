@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday Rose 🌹 — A Little Surprise</title>
+  <style>
+    :root{
+      --bg-a: #efe6ff; /* pale lilac */
+      --bg-b: #f3e8ff; /* lighter */
+      --accent: #ff66a1; /* pink */
+      --muted: #6b4b63;
+      --card: rgba(255,255,255,0.92);
+      --glow: rgba(255,105,180,0.25);
+    }
+
+    html,body{height:100%;margin:0;background: linear-gradient(180deg,var(--bg-a),var(--bg-b));font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:var(--muted); -webkit-font-smoothing:antialiased;}
+    body{display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden}
+
+    /* wrapper */
+    .stage-wrap{width:100%;max-width:980px;background:var(--card);backdrop-filter: blur(6px);border-radius:18px;padding:26px;box-shadow:0 18px 60px rgba(89,46,102,0.12);position:relative;overflow:hidden;min-height:620px}
+
+    header{display:flex;gap:14px;align-items:center}
+    .logo{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#c084fc,#fb7185);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:22px;box-shadow:0 8px 28px rgba(139,92,246,0.12)}
+    h1{margin:0;font-size:24px;color:#3a0f2f}
+    p.lead{margin:6px 0 0;color:#6b4b63}
+
+    main{position:relative;margin-top:14px;display:flex;flex-direction:column;align-items:center;min-height:520px}
+
+    /* scenes */
+    .scene{position:absolute;inset:92px 26px 26px 26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease}
+    .scene.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+    .scene.hidden{transform:translateY(8px)}
+
+    /* text card */
+    .card{width:100%;max-width:760px;background:linear-gradient(180deg,rgba(255,255,255,0.95),rgba(255,255,255,0.98));padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(78,36,80,0.06);text-align:left;max-height:420px;overflow:auto}
+    .title-large{font-weight:800;font-size:32px;color:#4a1438}
+    .subtitle{color:var(--muted)}
+
+    /* typing */
+    .typing{font-size:16px;line-height:1.6;white-space:pre-wrap;color:#3a1630;min-height:220px}
+
+    /* buttons */
+    .controls{display:flex;gap:12px;margin-top:8px;justify-content:center}
+    .btn{cursor:pointer;padding:10px 18px;border-radius:999px;border:0;font-weight:700;letter-spacing:0.2px;box-shadow:0 10px 30px rgba(99,40,84,0.08)}
+    .btn-primary{background:linear-gradient(90deg,#ff9cc3,#ff6b99);color:#fff}
+    .btn-ghost{background:transparent;border:1px solid rgba(74,20,95,0.06);color:#4a1438}
+
+    /* photos / bouncing */
+    .photos{position:absolute;inset:0;pointer-events:none;z-index:0}
+    .photo{
+      position:absolute;
+      width:160px;height:160px;border-radius:14px;object-fit:cover;
+      box-shadow:0 20px 40px rgba(74,20,95,0.16);
+      filter: drop-shadow(0 8px 24px rgba(123,63,172,0.12));
+      transform-origin:center center;
+      border:6px solid rgba(255,255,255,0.50);
+      background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      transition:transform .35s ease;
+      /* pink glow */
+      box-shadow: 0 10px 30px rgba(255,105,180,0.14), 0 0 40px rgba(255,105,180,0.08);
+      mix-blend-mode: normal;
+    }
+
+    /* separate animations so we can control each photo */
+    @keyframes bounceA {
+      0% { transform: translate(6vw, 6vh) rotate(-4deg); }
+      25%{ transform: translate(60vw,10vh) rotate(6deg); }
+      50%{ transform: translate(10vw,60vh) rotate(-6deg); }
+      75%{ transform: translate(68vw,52vh) rotate(8deg); }
+      100%{ transform: translate(18vw,12vh) rotate(-4deg); }
+    }
+    @keyframes bounceB {
+      0% { transform: translate(70vw,20vh) rotate(8deg); }
+      25%{ transform: translate(12vw,28vh) rotate(-8deg); }
+      50%{ transform: translate(62vw,68vh) rotate(6deg); }
+      75%{ transform: translate(18vw,58vh) rotate(-6deg); }
+      100%{ transform: translate(78vw,18vh) rotate(10deg); }
+    }
+    @keyframes bounceC {
+      0% { transform: translate(40vw,10vh) rotate(3deg); }
+      25%{ transform: translate(6vw,42vh) rotate(-5deg); }
+      50%{ transform: translate(56vw,72vh) rotate(4deg); }
+      75%{ transform: translate(22vw,48vh) rotate(-8deg); }
+      100%{ transform: translate(46vw,12vh) rotate(3deg); }
+    }
+    @keyframes bounceD {
+      0% { transform: translate(12vw,72vh) rotate(-7deg); }
+      25%{ transform: translate(68vw,36vh) rotate(7deg); }
+      50%{ transform: translate(18vw,14vh) rotate(-3deg); }
+      75%{ transform: translate(60vw,58vh) rotate(5deg); }
+      100%{ transform: translate(8vw,32vh) rotate(-7deg); }
+    }
+
+    .photo.pA { animation: bounceA 18s ease-in-out infinite; animation-delay: 0s; }
+    .photo.pB { animation: bounceB 20s ease-in-out infinite; animation-delay: 4s; }
+    .photo.pC { animation: bounceC 19s ease-in-out infinite; animation-delay: 2s; }
+    .photo.pD { animation: bounceD 21s ease-in-out infinite; animation-delay: 6s; }
+
+    /* floating hearts */
+    .hearts{position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:screen}
+    .heart{position:absolute;font-size:26px;opacity:.9;filter:drop-shadow(0 6px 18px rgba(255,105,180,0.12))}
+    @keyframes heartFloat1 { 0%{ transform:translateY(0) rotate(0);} 50%{ transform:translateY(-18px) rotate(-8deg);} 100%{ transform:translateY(0) rotate(0);} }
+    @keyframes heartFloat2 { 0%{ transform:translateY(0) rotate(0);} 50%{ transform:translateY(14px) rotate(6deg);} 100%{ transform:translateY(0) rotate(0);} }
+    .heart.h1{left:8%;top:12%;animation:heartFloat1 5.6s ease-in-out infinite}
+    .heart.h2{left:78%;top:18%;animation:heartFloat2 6.2s ease-in-out infinite}
+    .heart.h3{left:28%;top:72%;animation:heartFloat1 5.2s ease-in-out infinite}
+    .heart.h4{left:62%;top:82%;animation:heartFloat2 6.8s ease-in-out infinite}
+
+    /* reaction area */
+    .reaction{min-height:56px;display:flex;align-items:center;justify-content:center;gap:12px}
+    .emoji-large{font-size:46px}
+
+    /* confetti canvas */
+    #confetti{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+
+    /* audio controls */
+    .audio-ctrl{position:absolute;right:20px;top:20px;z-index:9}
+    .play-btn{background:transparent;border:2px solid rgba(74,20,95,0.06);padding:8px 12px;border-radius:999px;font-weight:700;color:#4a1438;cursor:pointer}
+
+    /* small responsive */
+    @media (max-width:720px){
+      .photo{width:120px;height:120px}
+      .card{padding:14px}
+      .title-large{font-size:20px}
+      .typing{font-size:15px}
+    }
+  </style>
+</head>
+<body>
+  <div class="stage-wrap" id="app">
+    <div class="logo" style="position:absolute;left:26px;top:24px">❤️</div>
+    <div style="position:absolute;left:110px;top:28px">
+      <h1 style="margin:0;font-size:18px;color:#3a1630">Happy Birthday, Rose 🌹</h1>
+      <div class="subtitle" style="font-size:13px">A little site — birthday + a tiny question</div>
+    </div>
+
+    <!-- floating hearts (background) -->
+    <div class="hearts" aria-hidden="true">
+      <div class="heart h1" style="color:#ffd0eb">💗</div>
+      <div class="heart h2" style="color:#ffb6e0">💖</div>
+      <div class="heart h3" style="color:#ffd6f0">💞</div>
+      <div class="heart h4" style="color:#ffccf8">💕</div>
+    </div>
+
+    <!-- photos container -->
+    <div class="photos" id="photos">
+      <!-- Photos will be toggled visible per scene via JS by controlling z-index / opacity -->
+      <img src="IMG_20251006_195509_312.jpg" class="photo pA" id="photo1" style="z-index:1;opacity:0.95;"/>
+      <img src="IMG_20251015_221250_615.jpg" class="photo pB" id="photo2" style="z-index:1;opacity:0.92;"/>
+      <img src="IMG_20251014_211033_338.jpg" class="photo pC" id="photo3" style="z-index:1;opacity:0.92;"/>
+      <img src="IMG_20251002_112135_632.jpg" class="photo pD" id="photo4" style="z-index:1;opacity:0.9;"/>
+    </div>
+
+    <!-- audio control -->
+    <div class="audio-ctrl">
+      <audio id="bgAudio" loop>
+        <source src="Connie Francis - Pretty Little Baby (Official Audio).mp3" type="audio/mpeg">
+        <!-- if using another filename, replace the src above -->
+      </audio>
+      <button id="playPause" class="play-btn">Play ♫</button>
+    </div>
+
+    <main>
+      <!-- Scene 1: Intro -->
+      <section id="scene-1" class="scene show">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div class="title-large" style="color:#4a1438">Happy Birthday, my gorgeous Rose 🌹</div>
+          <div class="card" style="text-align:center;max-width:640px">
+            <div style="font-size:15px;color:#4a1438">The sky is pretty tonight, but your smile is the brightest thing I’ve seen. Click to open your letter.</div>
+            <div style="margin-top:14px">
+              <button id="startBtn" class="btn btn-primary">Open your letter</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scene 2: Letter -->
+      <section id="scene-2" class="scene hidden" style="z-index:2">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="font-weight:800;font-size:20px;color:#4a1438">A message from your Puchka ❤️</div>
+            <div style="font-size:13px;color:var(--muted)">Typing... ✨</div>
+          </div>
+          <div id="typed" class="typing" style="margin-top:12px"></div>
+          <div style="display:flex;justify-content:center;margin-top:12px">
+            <button id="toProposal" class="btn btn-primary">Next: A question</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scene 3: Proposal -->
+      <section id="scene-3" class="scene hidden" style="z-index:2">
+        <div class="card" style="text-align:center">
+          <div class="title-large" style="color:#4a1438">Will you be mine forever, Rose?</div>
+          <div style="margin-top:12px" class="controls">
+            <button id="yesBtn" class="btn btn-primary">Yes ❤️</button>
+            <button id="noBtn" class="btn btn-ghost">No 😢</button>
+          </div>
+          <div class="reaction" id="reaction" style="margin-top:14px"></div>
+          <div style="margin-top:10px;color:var(--muted);font-size:13px">(This will only proceed after a "Yes" — gentle nudges only)</div>
+        </div>
+      </section>
+
+      <!-- Scene 4: Accepted -->
+      <section id="scene-4" class="scene hidden" style="z-index:4">
+        <div class="card" style="text-align:center">
+          <div class="title-large" style="color:#5c1b4a">She said YES! 💍</div>
+          <div style="margin-top:8px;color:var(--muted);font-size:16px">Forever yours,<br><strong>Your Puchka ❤️</strong></div>
+          <div style="margin-top:14px">
+            <button id="replay" class="btn btn-ghost">Replay / Send again</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- confetti canvas -->
+    <canvas id="confetti"></canvas>
+  </div>
+
+  <script>
+    /* ---------- personalization message (full) ---------- */
+    const fullMessage = `Happy Birthday, my gorgeous Rose 🌹
+
+My baby, my wifey, my everything — happy birthday to the woman who owns not just my heart, but my whole damn soul. Every day with you feels like a dream I never want to wake up from, and on your special day, I just want to pour out everything that's been sitting in my heart.
+
+You have no idea how much I miss you all day. It's insane. I'll be doing something random, and suddenly your smile flashes in my mind, your laugh echoes somewhere in my head, and boom — I'm lost. I swear even the air feels incomplete without you around. I crave your presence, your warmth, that soft touch that drives me crazy every single time.
+
+I just want to hold you close, wrap my arms around your waist, feel your heartbeat against mine, and never let go. The way you fit perfectly in my arms — god, that's home. Nothing in this world compares to that feeling.
+
+You are my peace and my chaos, my calm and my madness. You're the reason I smile so effortlessly, the reason I believe love can actually be this deep, this beautiful, this addictive. You've changed everything for me, Rose. You've made my world brighter, my nights sweeter, and my heart softer.
+
+And let's be real — you also make my thoughts dangerously naughty 😏 because every time I think of you, I can't help imagining your touch, your scent, your lips... everything. You've completely spoiled me — now nothing feels right unless it's you.
+
+I just want to be there with you, to hold you from behind, whisper "happy birthday" in your ear, kiss your neck, and feel you melt into me. You deserve to be spoiled, loved, pampered, and kissed endlessly today (and every day).
+
+So here's to you, my Rose — the love of my life, my heartbeat, my reason for everything. I'm so damn lucky to be yours. I miss you like crazy, and I can't wait till I get to hug you tight and remind you in person just how much I love you.
+
+Forever yours,
+Your Puchka ❤️`;
+
+    /* ---------- scene elements ---------- */
+    const s1 = document.getElementById('scene-1');
+    const s2 = document.getElementById('scene-2');
+    const s3 = document.getElementById('scene-3');
+    const s4 = document.getElementById('scene-4');
+    const startBtn = document.getElementById('startBtn');
+    const toProposal = document.getElementById('toProposal');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const reaction = document.getElementById('reaction');
+    const typed = document.getElementById('typed');
+    const photo1 = document.getElementById('photo1');
+    const photo2 = document.getElementById('photo2');
+    const photo3 = document.getElementById('photo3');
+    const photo4 = document.getElementById('photo4');
+    const confCanvas = document.getElementById('confetti');
+    const replay = document.getElementById('replay');
+
+    /* initialize visibility: show photos needed per scene
+       Scenes:
+         - Scene 2 (letter): show photo1 & photo2 (others dim)
+         - Scene 3 (proposal): show photo3 & photo4
+       We'll control opacity to keep not-needed photos subtle.
+    */
+    function showScene(sceneEl){
+      [s1,s2,s3,s4].forEach(s => { s.classList.remove('show'); s.classList.add('hidden'); });
+      sceneEl.classList.add('show'); sceneEl.classList.remove('hidden');
+    }
+
+    // start -> letter
+    startBtn.addEventListener('click', () => {
+      showScene(s2);
+      // photos for letter: 1 & 2 visible, 3&4 hidden (low opacity)
+      photo1.style.opacity = 0.98; photo2.style.opacity = 0.95;
+      photo3.style.opacity = 0.17; photo4.style.opacity = 0.15;
+      // start typing
+      startTyping(fullMessage, typed, () => {
+        // typing complete; keep waiting for user to click Next (or auto-enable)
+      });
+      tryAutoPlay();
+    });
+
+    // to proposal
+    toProposal.addEventListener('click', () => {
+      showScene(s3);
+      // show photos 3 & 4 prominently
+      photo1.style.opacity = 0.12; photo2.style.opacity = 0.12;
+      photo3.style.opacity = 0.96; photo4.style.opacity = 0.94;
+      reaction.innerHTML = ''; // clear reaction area
+    });
+
+    // proposal buttons
+    noBtn.addEventListener('click', () => {
+      reaction.innerHTML = `<div style="display:flex;align-items:center;gap:12px"><div class="emoji-large">😭</div><div style="text-align:left"><div style="font-weight:700;color:#2b4fa5">Awww — please say yes 😭</div><div style="color:var(--muted)">You can change your mind — nothing will proceed until 'Yes' ❤️</div></div></div>`;
+    });
+
+    yesBtn.addEventListener('click', () => {
+      reaction.innerHTML = `<div style="display:flex;align-items:center;gap:12px"><div class="emoji-large">🥰</div><div style="text-align:left"><div style="font-weight:800;color:#b81f5b">She said YES!</div><div style="color:var(--muted)">Forever starts now 💍</div></div></div>`;
+      // delay a little for reaction, then proceed to accepted
+      setTimeout(() => {
+        showScene(s4);
+        // start confetti
+        startConfetti(confCanvas);
+      }, 850);
+    });
+
+    replay.addEventListener('click', () => {
+      stopConfetti();
+      // reset typed area
+      typed.textContent = '';
+      photo1.style.opacity = 0.98; photo2.style.opacity = 0.95; photo3.style.opacity = 0.15; photo4.style.opacity = 0.15;
+      showScene(s1);
+    });
+
+    // allow clicking the first scene card to open as well
+    s1.addEventListener('click', (e)=>{
+      // if they click the button use that; otherwise clicking background also advances
+      if(e.target === startBtn) return;
+      startBtn.click();
+    });
+
+    /* ---------- typing (auto-type line by line with natural speed) ---------- */
+    function startTyping(text, el, done){
+      el.textContent = '';
+      const lines = text.split('\\n');
+      let i = 0;
+      function typeLine(){
+        if(i >= lines.length){ if(done) done(); return; }
+        const line = lines[i];
+        const p = document.createElement('div');
+        p.className = 'line';
+        el.appendChild(p);
+        typeChars(p, line, 0, () => {
+          // small pause after each paragraph
+          i++;
+          setTimeout(typeLine, 420);
+        });
+      }
+      typeLine();
+    }
+    function typeChars(node, str, idx, cb){
+      if(idx > str.length){ cb(); return; }
+      node.textContent = str.slice(0, idx);
+      // natural random delay
+      const delay = 10 + Math.random()*28;
+      setTimeout(() => typeChars(node, str, idx+1, cb), delay);
+    }
+
+    /* ---------- audio play/pause control (handles blocked autoplay) ---------- */
+    const bgAudio = document.getElementById('bgAudio');
+    const playPause = document.getElementById('playPause');
+    let playing = false;
+    function tryAutoPlay(){
+      if(!bgAudio) return;
+      const p = bgAudio.play?.();
+      if(p && typeof p.then === 'function'){
+        p.then(()=>{ playing = true; playPause.textContent = 'Pause ♫'; })
+         .catch(()=>{ playing = false; playPause.textContent = 'Play ♫'; });
+      } else {
+        playing = !bgAudio.paused;
+        playPause.textContent = playing ? 'Pause ♫' : 'Play ♫';
+      }
+    }
+    playPause.addEventListener('click', () => {
+      if(!bgAudio) return;
+      if(bgAudio.paused){ bgAudio.play(); playing = true; playPause.textContent = 'Pause ♫'; }
+      else { bgAudio.pause(); playing = false; playPause.textContent = 'Play ♫'; }
+    });
+
+    /* ---------- confetti implementation (simple) ---------- */
+    let confettiTimer = null;
+    function startConfetti(canvas){
+      if(!canvas) return;
+      stopConfetti();
+      const ctx = canvas.getContext('2d');
+      function resize(){ canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; }
+      resize(); window.addEventListener('resize', resize);
+      const pieces = [];
+      const colors = ['#FF66A1','#FFC0E8','#FDE68A','#60A5FA','#C084FC'];
+      for(let i=0;i<140;i++){
+        pieces.push({
+          x: Math.random()*canvas.width,
+          y: Math.random()*canvas.height - canvas.height,
+          w: Math.random()*10+6,
+          h: Math.random()*8+6,
+          vx: (Math.random()-0.5)*1.8,
+          vy: Math.random()*3+1,
+          vr: (Math.random()-0.5)*0.2,
+          rot: Math.random()*6,
+          color: colors[Math.floor(Math.random()*colors.length)]
+        });
+      }
+      confettiTimer = setInterval(()=>{
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        for(const p of pieces){
+          p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.02;
+          ctx.save();
+          ctx.translate(p.x,p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+          ctx.restore();
+          if(p.y > canvas.height + 20){ p.y = -40; p.x = Math.random()*canvas.width; p.vy = Math.random()*3+1 }
+        }
+      }, 16);
+    }
+    function stopConfetti(){
+      if(confettiTimer) clearInterval(confettiTimer);
+      confettiTimer = null;
+      const ctx = confCanvas.getContext('2d');
+      if(ctx) ctx.clearRect(0,0,confCanvas.width, confCanvas.height);
+    }
+
+    /* ---------- initial state: show scene1, dim photos 3/4 */ 
+    (function init(){
+      // scene 1 visible by default (via class on markup)
+      photo1.style.opacity = 0.98; photo2.style.opacity = 0.95; photo3.style.opacity = 0.15; photo4.style.opacity = 0.14;
+      // initial positions are handled by CSS animations
+      // small entrance transform
+      [s1,s2,s3,s4].forEach(s => s.classList.add('hidden'));
+      s1.classList.add('show'); s1.classList.remove('hidden');
+
+      // autoplay attempt
+      tryAutoPlay();
+    })();
+
+    // ensure confCanvas fills container
+    function resizeCanvasToFill() {
+      confCanvas.width = confCanvas.clientWidth;
+      confCanvas.height = confCanvas.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvasToFill);
+    resizeCanvasToFill();
+
+    /* ---------- helpful note if audio file missing ---------- */
+    bgAudio.addEventListener('error', ()=> {
+      // if audio file not found or blocked, show play button that does nothing
+      playPause.textContent = 'Play ♫';
+      playPause.disabled = false;
+    });
+
+  </script>
+</body>
+</html>
